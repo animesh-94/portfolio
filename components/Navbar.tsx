@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import path from "path/win32";
 import React, { useEffect, useState } from "react";
+import motion from "framer-motion";
 
 const links = [
   { href: "/", label: "Home" },
@@ -49,13 +50,15 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 backdrop-blur-md sticky top-0 z-50">
         <div className="flex justify-between items-center h-20">
           <div className="flex-shrink-0" tabIndex={0}>
             <Link
               href="/"
               className="font-zentry text-2xl font-bold text-white"
-            >anix_94</Link>
+            >
+              anix_94
+            </Link>
           </div>
 
           <div className="hidden md:block">

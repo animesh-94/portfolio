@@ -1,6 +1,8 @@
 "use client";
 import React from "react";
 import LeetCodeStats from "./LeetCodeStats";
+import GitHubCalendar from "react-github-calendar";
+import Chart from "./Chart";
 
 const Hero = () => {
   return (
@@ -53,9 +55,15 @@ const Hero = () => {
                     <div>{`}`}</div>
                   </div>
                 </div>
-                <LeetCodeStats/>
+                <div className="mt-14">
+                  <LeetCodeStats />
+                </div>
               </div>
             </div>
+          </div>
+          <div className="mt-16 flex justify-center item-center">
+            {/* <GitHubCalendar username="animesh-94" /> */}
+            <Chart />
           </div>
         </div>
       </div>

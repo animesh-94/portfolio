@@ -31,8 +31,8 @@ function LeetCodeStats() {
     <div>
       <h2>LeetCode Stats</h2>
       <ul>
-        <li>LeetCode Rating: {stats.rating  || 0}</li>
-        <li>Above Percentage: {stats.topPercentage || 'N/A'}</li>
+        <li>Rating: {Math.round(stats.rating  || 0)}</li>
+        <li>Percentage: {stats.topPercentage || 'N/A'}%</li>
         {/* Add more fields as needed */}
       </ul>
     </div>
