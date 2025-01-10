@@ -1,60 +1,94 @@
-import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server';
 
 type LeetCodeData = {
-  rating: number
-  topPercentage: number
-}
+  rating: number;
+  topPercentage: number;
+  count: number;
+};
 
 type CachedData = {
-  data: LeetCodeData | null
-  timestamp: number
-}
+  data: LeetCodeData | null;
+  timestamp: number;
+};
 
-const CACHE_DURATION = 60 * 60 * 1000 // 1 hour
-let cachedData: CachedData = { data: null, timestamp: 0 }
+const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
+let cachedData: CachedData = { data: null, timestamp: 0 };
 
 export async function GET() {
   try {
     // Return cached data if valid
     if (cachedData.data && Date.now() - cachedData.timestamp < CACHE_DURATION) {
-      return NextResponse.json(cachedData.data)
+      return NextResponse.json(cachedData.data);
     }
 
-    const response = await fetch('https://leetcode.com/graphql', {
+    const contestQuery = `
+      query userContestRankingInfo($username: String!) {
+        userContestRanking(username: $username) {
+          rating
+          topPercentage
+        }
+      }
+    `;
+
+    const progressQuery = `
+      query userSubmitStats($username: String!) {
+        matchedUser(username: $username) {
+          submitStats {
+            acSubmissionNum {
+              count
+            }
+          }
+        }
+      }
+    `;
+
+    // Fetch contest data
+    const contestResponse = await fetch('https://leetcode.com/graphql', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        query: `
-          query userContestRankingInfo($username: String!) {
-            userContestRanking(username: $username) {
-              rating
-              topPercentage
-            }
-          }
-        `,
+        query: contestQuery,
         variables: { username: '_animesh_94' },
       }),
-    })
+    });
 
-    const data = await response.json()
+    const contestData = await contestResponse.json();
 
-    if (!data.data?.userContestRanking) {
-      throw new Error('Invalid response from LeetCode API')
+    if (!contestData.data?.userContestRanking) {
+      throw new Error('Invalid contest response from LeetCode API');
     }
 
-    const contestData = data.data.userContestRanking
+    // Fetch progress data
+    const progressResponse = await fetch('https://leetcode.com/graphql', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query: progressQuery,
+        variables: { username: '_animesh_94' },
+      }),
+    });
 
+    const progressData = await progressResponse.json();
+
+    if (!progressData.data?.matchedUser?.submitStats?.acSubmissionNum) {
+      throw new Error('Invalid progress response from LeetCode API');
+    }
+
+    // Extract data
+    const rating = Number(contestData.data.userContestRanking.rating) || 0;
+    const topPercentage = Number(contestData.data.userContestRanking.topPercentage) || 0;
+    const count =
+      Number(progressData.data.matchedUser.submitStats.acSubmissionNum[0]?.count) || 0;
+
+    // Cache the data
     cachedData = {
-      data: {
-        rating: Number(contestData.rating) || 0,
-        topPercentage: Number(contestData.topPercentage) || 0,
-      },
+      data: { rating, topPercentage, count },
       timestamp: Date.now(),
-    }
+    };
 
-    return NextResponse.json(cachedData.data)
+    return NextResponse.json(cachedData.data);
   } catch (error) {
-    console.error('LeetCode API Error:', error)
-    return NextResponse.json({ error: 'Failed to fetch LeetCode data' }, { status: 500 })
+    console.error('LeetCode API Error:', error);
+    return NextResponse.json({ error: 'Failed to fetch LeetCode data' }, { status: 500 });
   }
 }

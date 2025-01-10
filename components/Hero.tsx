@@ -61,7 +61,7 @@ const Hero = () => {
               </div>
             </div>
           </div>
-          <div className="mt-16 flex justify-center item-center">
+          <div className="mt-16 flex justify-center item-center max-sm">
             {/* <GitHubCalendar username="animesh-94" /> */}
             <Chart />
           </div>
