@@ -8,11 +8,11 @@ import React, { useEffect, useState } from "react";
 import motion from "framer-motion";
 
 const links = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/projects", label: "Projects" },
-  { href: "/experience", label: "Experience" },
-  { href: "/contact", label: "Contact" },
+  { idx: 1, href: "/", label: "Home" },
+  { idx: 2, href: "/about", label: "About" },
+  { idx: 3, href: "/projects", label: "Projects" },
+  { idx: 4, href: "/experience", label: "Experience" },
+  { idx: 5, href: "/contact", label: "Contact" },
 ];
 
 const Navbar = () => {
@@ -64,7 +64,7 @@ const Navbar = () => {
           <div className="hidden md:block">
             <div className="ml-10 flex items-center space-x-7">
               {links.map((link, idx) => (
-                <Link href={link.href} className="nav-hover-btn">
+                <Link key={link.idx} href={link.href} className="nav-hover-btn">
                   {link.label}
                 </Link>
               ))}

@@ -2,6 +2,7 @@
 import React from "react";
 import LeetCodeStats from "./LeetCodeStats";
 import GitHubCalendar from "react-github-calendar";
+// import LeetCodeCalendar from "leetcode-calendar";
 import Chart from "./Chart";
 
 const Hero = () => {
@@ -23,7 +24,7 @@ const Hero = () => {
             </div>
             <div className="space-y-16">
               <div className="font-mono">
-                <div className="mb-4 text-sm text-sky-600">animesh.cpp</div>
+                <div className="mb-4 text-sm text-teal-500">animesh.cpp</div>
                 <div className="space-y-2 text-sm">
                   <div>
                     <span className="text-primary-500">class animesh </span>
@@ -61,10 +62,13 @@ const Hero = () => {
               </div>
             </div>
           </div>
-          <div className="mt-16 flex justify-center item-center max-sm">
+          <div className="mt-16 w-full flex justify-center item-center max-sm">
             {/* <GitHubCalendar username="animesh-94" /> */}
             <Chart />
           </div>
+          {/* <div className="mt-16 flex justify-center item-center max-sm">
+            <LeetCodeCalendar />
+          </div> */}
         </div>
       </div>
     </>

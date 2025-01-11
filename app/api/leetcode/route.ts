@@ -3,7 +3,8 @@ import { NextResponse } from 'next/server';
 type LeetCodeData = {
   rating: number;
   topPercentage: number;
-  count: number;
+  solvedCount: number;
+  totalQuestions: number;
 };
 
 type CachedData = {
@@ -42,6 +43,14 @@ export async function GET() {
       }
     `;
 
+    const totalQuestionsQuery = `
+      query totalQuestions {
+        allQuestionsCount {
+          count
+        }
+      }
+    `;
+
     // Fetch contest data
     const contestResponse = await fetch('https://leetcode.com/graphql', {
       method: 'POST',
@@ -74,21 +83,42 @@ export async function GET() {
       throw new Error('Invalid progress response from LeetCode API');
     }
 
+    // Fetch total questions data
+    const totalQuestionsResponse = await fetch('https://leetcode.com/graphql', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query: totalQuestionsQuery,
+      }),
+    });
+
+    const totalQuestionsData = await totalQuestionsResponse.json();
+
+    if (!totalQuestionsData.data?.allQuestionsCount) {
+      throw new Error('Invalid total questions response from LeetCode API');
+    }
+
     // Extract data
     const rating = Number(contestData.data.userContestRanking.rating) || 0;
-    const topPercentage = Number(contestData.data.userContestRanking.topPercentage) || 0;
-    const count =
+    const topPercentage =
+      Number(contestData.data.userContestRanking.topPercentage) || 0;
+    const solvedCount =
       Number(progressData.data.matchedUser.submitStats.acSubmissionNum[0]?.count) || 0;
+    const totalQuestions =
+      Number(totalQuestionsData.data.allQuestionsCount[0]?.count) || 0;
 
     // Cache the data
     cachedData = {
-      data: { rating, topPercentage, count },
+      data: { rating, topPercentage, solvedCount, totalQuestions },
       timestamp: Date.now(),
     };
 
     return NextResponse.json(cachedData.data);
   } catch (error) {
     console.error('LeetCode API Error:', error);
-    return NextResponse.json({ error: 'Failed to fetch LeetCode data' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to fetch LeetCode data' },
+      { status: 500 }
+    );
   }
 }
