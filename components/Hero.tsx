@@ -2,7 +2,6 @@
 import React from "react";
 import LeetCodeStats from "./LeetCodeStats";
 import GitHubCalendar from "react-github-calendar";
-// import LeetCodeCalendar from "leetcode-calendar";
 import Chart from "./Chart";
 
 const Hero = () => {
@@ -66,9 +65,6 @@ const Hero = () => {
             {/* <GitHubCalendar username="animesh-94" /> */}
             <Chart />
           </div>
-          {/* <div className="mt-16 flex justify-center item-center max-sm">
-            <LeetCodeCalendar />
-          </div> */}
         </div>
       </div>
     </>
